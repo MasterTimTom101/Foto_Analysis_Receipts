@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>CSV-File of Cash Receipts </title>
+</head>
+<body>
+  <h1>CSV-File of all Cash Resceipts</h1>
+  <ul>
+    {% for receipt in receipts %}
+      <li>{{ receipt.id }} – <strong>{{ receipt.title }}</strong> von {{ receipt.author }}</li>
+    {% endfor %}
+  </ul>
+  <a href="/add_receipt/upload"> Upload a new Cash Receipt</a>
+</body>
+</html>
