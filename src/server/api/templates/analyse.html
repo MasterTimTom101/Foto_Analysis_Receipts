@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Analyse a Calendar Week</title>
+</head>
+<body>
+  <h1>Analyse the Cash Receipts of a Calendar Week</h1>
+  <h1>CSV-File of all Cash Resceipts</h1>
+  <ul>
+    {% for receipt in receipts %}
+      <li>{{ receipt.id }} – <strong>{{ receipt.title }}</strong> von {{ receipt.author }}</li>
+    {% endfor %}
+  </ul>
+
+  <a href="/receipts/home"> General Info for the Project</a><br>
+  <a href="/receipts/show"> Shows the content of a Calendar-Week CSV-File</a><br>
+  <a href="/receipts/upload"> Upload a new Photo of a Receipt</a><br>
+  <a href="/receipts/analyse"> Analyse Photos of Receipts of a Calendar-Week</a><br>
+  <a href="/receipts/about"> Version Info of the Project and General Thanks</a><br>
+  <br>
+
+
+</body>
+</html>
