@@ -18,7 +18,10 @@ pip install -r requirements.txt
 python run_app.py
 # Visit: http://localhost:8080/receipts/home
 
-# Run AI analysis
+# Run AI analysis (recommended)
+python analyze_receipts.py
+
+# Or alternative method
 python src/server/api/tasks.py
 ```
 
@@ -95,12 +98,22 @@ Then visit: http://localhost:8080/receipts/home
 - `/receipts/about` - About page
 
 ### Console Application (AI Analysis)
+
+**Recommended method:**
+```bash
+python analyze_receipts.py
+```
+
+**Alternative method:**
 ```bash
 python src/server/api/tasks.py
 ```
-1. Enter calendar week (e.g., `2025CW_30`)
-2. AI processes all photos in that folder
-3. Results saved to `src/server/api/cost_files/2025CW_30_costs.csv`
+
+**How it works:**
+1. Shows available calendar weeks
+2. Enter calendar week (e.g., `2025CW_30`)
+3. AI processes all photos in that folder
+4. Shows summary and saves results to `src/server/api/cost_files/2025CW_30_costs.csv`
 
 ### Output Format
 CSV files contain:

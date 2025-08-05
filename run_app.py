@@ -8,7 +8,7 @@ import os
 # Add the src directory to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-from server.api.app import app
+from src.server.api.app import app
 
 if __name__ == '__main__':
     print("Starting Receipt Analysis Web Application...")
