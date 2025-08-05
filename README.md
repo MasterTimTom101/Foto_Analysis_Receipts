@@ -1,38 +1,59 @@
 # 📄 Photo Analysis of Receipts
 
-> AI-powered receipt analysis tool that extracts food and non-food costs from receipt photos using Google Gemini AI
+> AI-powered receipt analysis tool with REST API and Swagger documentation that extracts food and non-food costs from receipt photos using Google Gemini AI
 
 ## 🚀 TL;DR
 
-This Flask web application with AI-powered backend analyzes receipt photos to automatically categorize and sum up food vs non-food expenses by calendar week. Perfect for expense tracking and budgeting.
+This Flask application provides both a **REST API with Swagger documentation** and a web interface for AI-powered receipt analysis. Automatically categorize and sum up food vs non-food expenses by calendar week using Google Gemini AI.
 
 **Quick Start:**
 ```bash
 # Setup
 cp .env_template .env  # Add your Gemini API key
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
-# Run web app
+# Run application
 python run_app.py
-# Visit: http://localhost:8080/receipts/home
+# Visit Swagger API: http://localhost:8081/swagger/
+# Visit Web App: http://localhost:8081/receipts/home
 
-# Run AI analysis (recommended)
+# Or run console analysis
 python analyze_receipts.py
-
-# Or alternative method
-python src/server/api/tasks.py
 ```
 
 ## 📋 What This Project Does
 
+- **🔗 REST API**: Complete REST API with Swagger documentation for programmatic access
 - **📸 Receipt Processing**: Upload receipt photos organized by calendar weeks
 - **🤖 AI Analysis**: Uses Google Gemini AI to extract itemized costs 
 - **📊 Categorization**: Automatically separates food from non-food expenses
 - **📈 Weekly Reports**: Generates CSV summaries by calendar week
-- **🌐 Web Interface**: Simple Flask web UI for file management
+- **🌐 Web Interface**: Simple Flask web UI for manual analysis
 - **💻 Console Mode**: Command-line batch processing
+
+## 🔗 API Endpoints
+
+### **Primary Interface: Swagger UI**
+**Visit: http://localhost:8081/swagger/**
+
+Interactive API documentation where you can:
+- Test all endpoints directly in the browser
+- View request/response schemas
+- See example data formats
+
+### **Available Endpoints:**
+
+**Analysis Operations** (`/api/v1/analyze/`):
+- `POST /` - Trigger AI analysis for a calendar week
+- `GET /{calendar_week}` - Get detailed analysis results
+- `GET /{calendar_week}/summary` - Get summary statistics
+- `GET /weeks` - List all available calendar weeks
+
+**System Operations** (`/api/v1/system/`):
+- `GET /health` - API health check
+- `GET /info` - System information 
+- `GET /config` - Configuration details
+- `GET /test` - Simple test endpoint
 
 ## 🛠️ Setup & Installation
 
@@ -46,7 +67,7 @@ python src/server/api/tasks.py
    cd Photo_Analysis_of_Receipts
    ```
 
-2. **Create virtual environment:**
+2. **Install dependencies:**
    ```bash
    python -m venv .venv
    source .venv/bin/activate  # Windows: .venv\Scripts\activate
@@ -84,29 +105,50 @@ python src/server/api/tasks.py
 
 ## 🎯 Usage
 
-### Web Application
+### **Primary: Swagger API Interface**
 ```bash
 python run_app.py
 ```
-Then visit: http://localhost:8080/receipts/home
+**Then visit: http://localhost:8081/swagger/**
 
-**Available routes:**
-- `/receipts/home` - Project information
-- `/receipts/upload` - Upload interface  
-- `/receipts/analyse` - Analysis tools
-- `/receipts/show` - View results
-- `/receipts/about` - About page
+This is the **main interface** for the application where you can:
+1. **Explore all endpoints** with interactive documentation
+2. **Test API calls** directly in the browser
+3. **View response schemas** and example data
+4. **Trigger analysis** for any calendar week
+5. **Get results** in JSON format
 
-### Console Application (AI Analysis)
+### **Example API Usage:**
 
-**Recommended method:**
+**1. List available weeks:**
 ```bash
-python analyze_receipts.py
+curl http://localhost:8081/api/v1/analyze/weeks
 ```
 
-**Alternative method:**
+**2. Trigger analysis:**
 ```bash
-python src/server/api/tasks.py
+curl -X POST http://localhost:8081/api/v1/analyze/ \
+  -H "Content-Type: application/json" \
+  -d '{"calendar_week": "2025CW_30"}'
+```
+
+**3. Get results:**
+```bash
+curl http://localhost:8081/api/v1/analyze/2025CW_30
+```
+
+### **Secondary: Web Interface**
+Visit: http://localhost:8081/receipts/home
+
+**Available routes:**
+- `/receipts/home` - Project information and available weeks
+- `/receipts/analyse` - Trigger analysis for a calendar week
+- `/receipts/show` - View all analysis results
+- `/receipts/about` - About page
+
+### **Console Application (Alternative)**
+```bash
+python analyze_receipts.py
 ```
 
 **How it works:**
@@ -115,8 +157,8 @@ python src/server/api/tasks.py
 3. AI processes all photos in that folder
 4. Shows summary and saves results to `src/server/api/cost_files/2025CW_30_costs.csv`
 
-### Output Format
-CSV files contain:
+### **Output Format**
+Both API and CSV files contain:
 - `Datum` - Date from receipt
 - `Uhrzeit` - Time from receipt  
 - `Summe_Food` - Food costs (€)
@@ -129,18 +171,26 @@ CSV files contain:
 📦 Photo_Analysis_of_Receipts/
 ├── 📁 src/
 │   └── 📁 server/
-│       └── 📁 api/
-│           ├── 📄 app.py              # Flask app entry point
-│           ├── 📄 routes.py           # Web routes
-│           ├── 📄 tasks.py            # AI analysis logic
-│           ├── 📄 prompts.py          # AI prompts
-│           ├── 📁 templates/          # HTML templates
-│           ├── 📁 photos/             # Receipt images by week
-│           └── 📁 cost_files/         # Generated CSV reports
-├── 📄 run_app.py                      # Easy startup script
-├── 📄 requirements.txt                # Dependencies
-├── 📄 .env_template                   # Environment template
-└── 📄 README.md                       # This file
+│       ├── 📁 api/
+│       │   ├── 📄 __init__.py          # Flask app factory
+│       │   ├── 📁 v1/                  # API version 1 endpoints
+│       │   │   ├── 📄 analysis.py      # Analysis REST endpoints
+│       │   │   └── 📄 system.py        # System & test endpoints
+│       │   └── 📁 models/              # API data models
+│       │       ├── 📄 analysis.py      # Analysis models
+│       │       └── 📄 responses.py     # Response models
+│       ├── 📁 web/                     # Web interface
+│       │   ├── 📄 routes.py            # HTML routes
+│       │   └── 📁 templates/           # HTML templates
+│       ├── 📁 services/                # Business logic
+│       │   └── 📄 receipt_analyzer.py  # AI analysis service
+│       └── 📁 core/                    # Configuration
+│           └── 📄 config.py            # App configuration
+├── 📄 run_app.py                       # Main startup script
+├── 📄 analyze_receipts.py              # Console interface
+├── 📄 requirements.txt                 # Dependencies
+├── 📄 .env_template                    # Environment template
+└── 📄 README.md                        # This file
 ```
 
 ## 🔧 Configuration
@@ -165,15 +215,15 @@ FLASK_DEBUG=True
 ```bash
 # Make sure you're in the project root and virtual environment is activated
 pwd  # Should show .../Photo_Analysis_of_Receipts
-source .venv/bin/activate
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 python run_app.py
 ```
 
-**Port 8080 in Use:**
+**Port 8081 in Use:**
 ```bash
-# If port 8080 is busy, edit run_app.py and change the port number
+# Edit run_app.py and change the port number
 # Or kill the process using the port
-lsof -ti:8080 | xargs kill -9
+lsof -ti:8081 | xargs kill -9
 ```
 
 **Missing API Key:**
@@ -183,6 +233,9 @@ cat .env
 # Should show: GEMINI_API_KEY=your_key...
 ```
 
+**Swagger "Unable to render schema" Error:**
+- This has been fixed in the current version
+- Make sure you're using the latest code
 
 **No Photos Found:**
 ```bash
@@ -191,24 +244,65 @@ mkdir -p src/server/api/photos/2025CW_30
 # Add .jpeg files to the folder
 ```
 
+## 📊 API Response Examples
+
+**Analysis Result:**
+```json
+{
+  "calendar_week": "2025CW_30",
+  "status": "completed",
+  "total_food": 45.67,
+  "total_nonfood": 12.33,
+  "total_receipts": 3,
+  "receipts": [
+    {
+      "datum": "30.06.2025",
+      "uhrzeit": "14:30",
+      "summe_food": 23.45,
+      "summe_nonfood": 5.67,
+      "foto_datei": "receipt_01.jpeg"
+    }
+  ],
+  "analysis_date": "2025-08-05T21:42:15.123456"
+}
+```
+
+**Available Weeks:**
+```json
+{
+  "weeks": [
+    {
+      "week": "2025CW_30",
+      "year": 2025,
+      "week_number": 30,
+      "file_count": 5,
+      "analysis_status": "analyzed",
+      "last_analysis": "2025-08-05T21:42:15.123456"
+    }
+  ],
+  "total": 1
+}
+```
+
 ## 🎯 Future Enhancements
 
-- [ ] File upload functionality in web interface
-- [ ] User authentication system
+- [ ] File upload endpoints in REST API
+- [ ] User authentication for API access
 - [ ] Database integration (SQLite/PostgreSQL)
 - [ ] Support for PNG/PDF formats
 - [ ] Advanced categorization beyond Food/NonFood
-- [ ] Export to Excel/PDF reports
-- [ ] Batch processing multiple weeks at once
+- [ ] Webhook notifications for analysis completion
+- [ ] Batch processing multiple weeks via API
 
 ## 📝 Technical Notes
 
-- **Framework**: Flask (Python web framework)
+- **Framework**: Flask with Flask-RESTX for API and Swagger
 - **AI Model**: Google Gemini 2.5 Flash
+- **API Documentation**: Swagger UI with interactive testing
 - **Data Processing**: Pandas for CSV handling
 - **Image Processing**: Direct binary upload to Gemini
 - **Language**: Mixed German/English (receipt text in German)
-- **File Format**: JPEG images, CSV output
+- **File Format**: JPEG images, JSON API responses, CSV output
 
 ## 🤝 Contributing
 
@@ -225,3 +319,5 @@ Educational project - see course materials for usage rights.
 ---
 
 *Built with ❤️ as part of a coding bootcamp project*
+
+**🔗 Start exploring: http://localhost:8081/swagger/**

@@ -5,7 +5,7 @@ from flask_cors import CORS
 
 from ..core.config import config
 from ..web.routes import register_routes
-from .v1 import test_api, system_api, analysis_api
+from .v1 import system_api, analysis_api
 
 
 def create_app(config_name=None):
@@ -32,8 +32,7 @@ def create_app(config_name=None):
         prefix='/api/v1'
     )
     
-    # Register API namespaces
-    api.add_namespace(test_api, path='/test')
+    # Register API namespaces (test endpoint now included in system)
     api.add_namespace(system_api, path='/system')
     api.add_namespace(analysis_api, path='/analyze')
     
@@ -42,34 +41,3 @@ def create_app(config_name=None):
     
     return app
 
-
-def create_api_only_app(config_name=None):
-    """Create Flask application with only API endpoints (no web interface)"""
-    if config_name is None:
-        config_name = os.getenv('FLASK_CONFIG', 'default')
-    
-    app = Flask(__name__)
-    
-    # Load configuration
-    app.config.from_object(config[config_name])
-    config[config_name].init_app(app)
-    
-    # Enable CORS
-    CORS(app)
-    
-    # Create API instance
-    api = Api(
-        app,
-        version='1.0',
-        title='Receipt Analysis API',
-        description='AI-powered receipt analysis system using Google Gemini AI to extract costs from receipt photos',
-        doc='/swagger/',
-        prefix='/api/v1'
-    )
-    
-    # Register API namespaces
-    api.add_namespace(test_api, path='/test')
-    api.add_namespace(system_api, path='/system')
-    api.add_namespace(analysis_api, path='/analyze')
-    
-    return app

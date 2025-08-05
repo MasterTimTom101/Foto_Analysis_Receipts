@@ -8,19 +8,16 @@ from datetime import datetime
 import sys
 import os
 
-from ..models.responses import health_response_model, system_info_model
-from ...core.config import DevelopmentConfig
+from .models import health_response_model, system_info_model, test_response_model
+from ..config import DevelopmentConfig
 
 # Create API namespace
 api = Namespace('system', description='System information, health checks and tests')
 
-# Register centralized models with the namespace
+# Register models with the namespace
 api_health_response = api.model('HealthResponse', health_response_model)
 api_system_info = api.model('SystemInfo', system_info_model)
-api_test_response = api.model('TestResponse', {
-    'message': fields.String(required=True, description='Test message'),
-    'status': fields.String(description='Status')
-})
+api_test_response = api.model('TestResponse', test_response_model)
 
 # Initialize config
 config = DevelopmentConfig()
@@ -63,7 +60,7 @@ class SystemInfo(Resource):
         """Get system information"""
         
         try:
-            from ...services.receipt_analyzer import ReceiptAnalyzer
+            from ..receipt_analyzer import ReceiptAnalyzer
             analyzer = ReceiptAnalyzer(config)
             available_weeks = analyzer.get_available_weeks()
         except:
@@ -102,5 +99,6 @@ class SimpleTest(Resource):
         """Simple test endpoint to verify API is working"""
         return {
             'message': 'Hello World from REST API!',
+            'timestamp': datetime.utcnow().isoformat(),
             'status': 'success'
         }

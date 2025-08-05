@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="de" xmlns="http://www.w3.org/1999/html">
+<head>
+  <meta charset="UTF-8">
+  <title>Info of Project </title>
+</head>
+<body>
+  <h2>Info about the Project </h2> <h1>Photo-Analysis-of-Receipts</h1>
+  <h2 The purpose of the Project is to analyse weekly collected photos of Receipts towards Food and NonFood<br>
+  The analysis will be supported by Gemini AI and is based on Calendar-Weeks.<br>
+  The User will upload a JPEG-File into a Calendar-Week-Subdirectory supported by an Upload-Website<br>
+  The Subdirectories have each 9 digits and look like "2025CW_31" for Calendar-Week No. 31 of the Year 2025<br>
+  I recommend a resolution of VGA (640x480 Pixel) for the JPEG-Files.<br><br>
+  The program was developed on IDE PyCharm, means the environment has to be adapted according the used libraries.<br>
+  Install pandas, dotenv, os, flask, pathlib by the "pip install command".<br>
+  To run the Web-Application just execute the "app.py" and flask is starting a server on localhost on port 5000<br>
+  To run the Console-Application just execute the "tasks.py"<br>
+  As the Project was suffering on a "late start and narrow time table" <br>
+  there are a few open points as features to be realized in future:<br>
+  <ul>User Administration</ul>
+  <ul>Database Support</ul>
+  <ul>Logging Support</ul>
+  <ul>Web-Site-Supported Functions</ul>
+  <ul>Optionally Categories besides Food and NonFood Products</ul>
+  </h2>
+
+  <a href="/receipts/home"> General Info for the Project</a><br>
+  <a href="/receipts/show"> Shows the content of a Calendar-Week CSV-File</a><br>
+  <a href="/receipts/upload"> Upload a new Photo of a Receipt</a><br>
+  <a href="/receipts/analyse"> Analyse Photos of Receipts of a Calendar-Week</a><br>
+  <a href="/receipts/about"> Version Info of the Project and General Thanks</a><br>
+<br>
+
+</body>
+</html>

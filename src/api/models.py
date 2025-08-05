@@ -1,5 +1,5 @@
 """
-Analysis-related API models
+API models for receipt analysis
 """
 
 from flask_restx import fields
@@ -19,13 +19,13 @@ receipt_analysis_model = {
     'foto_datei': fields.String(description='Source image filename')
 }
 
-# Analysis result model (receipts field will be set after receipt model is registered)
+# Analysis result model
 analysis_result_model = {
     'calendar_week': fields.String(required=True, description='Calendar week analyzed'),
     'total_food': fields.Float(description='Total food costs in euros'),
     'total_nonfood': fields.Float(description='Total non-food costs in euros'),
     'total_receipts': fields.Integer(description='Number of receipts processed'),
-    'receipts': fields.List(fields.Raw, description='Individual receipt results'),
+    'receipts': fields.List(fields.Nested(receipt_analysis_model), description='Individual receipt results'),
     'analysis_date': fields.DateTime(description='When the analysis was performed'),
     'status': fields.String(enum=['pending', 'processing', 'completed', 'failed'], description='Analysis status')
 }
@@ -40,7 +40,6 @@ analysis_summary_model = {
     'analysis_date': fields.DateTime(description='When the analysis was performed')
 }
 
-
 # Calendar week model
 calendar_week_model = {
     'week': fields.String(required=True, description='Calendar week identifier'),
@@ -51,18 +50,50 @@ calendar_week_model = {
     'last_analysis': fields.DateTime(description='Last analysis date')
 }
 
-# Calendar weeks list model (weeks field will be set after week model is registered)
+# Calendar weeks list model
 calendar_weeks_model = {
-    'weeks': fields.List(fields.Raw, description='List of calendar weeks'),
+    'weeks': fields.List(fields.Nested(calendar_week_model)),
     'total': fields.Integer(description='Total number of weeks available')
 }
 
-# Group all analysis models
-analysis_models = {
-    'AnalysisRequest': analysis_request_model,
-    'AnalysisResult': analysis_result_model,
-    'AnalysisSummary': analysis_summary_model,
-    'ReceiptAnalysis': receipt_analysis_model,
-    'CalendarWeek': calendar_week_model,
-    'CalendarWeeksList': calendar_weeks_model
+# Success response model
+success_response_model = {
+    'success': fields.Boolean(default=True, description='Indicates successful operation'),
+    'message': fields.String(description='Success message'),
+    'data': fields.Raw(description='Response data')
+}
+
+# Error response model  
+error_response_model = {
+    'success': fields.Boolean(default=False, description='Indicates failed operation'),
+    'message': fields.String(required=True, description='Error message'),
+    'error_code': fields.String(description='Specific error code'),
+    'details': fields.Raw(description='Additional error details')
+}
+
+# Health check response model
+health_response_model = {
+    'status': fields.String(enum=['healthy', 'unhealthy'], description='Service health status'),
+    'timestamp': fields.DateTime(description='Health check timestamp'),
+    'version': fields.String(description='API version'),
+    'uptime': fields.Float(description='Service uptime in seconds'),
+    'ai_service': fields.String(enum=['available', 'unavailable'], description='AI service availability')
+}
+
+# System info response model
+system_info_model = {
+    'api_version': fields.String(description='API version'),
+    'python_version': fields.String(description='Python version'),  
+    'flask_version': fields.String(description='Flask version'),
+    'supported_image_formats': fields.List(fields.String, description='Supported image file formats'),
+    'max_file_size': fields.Integer(description='Maximum file size in bytes'),
+    'ai_model': fields.String(description='AI model being used'),
+    'available_weeks': fields.List(fields.String, description='Available calendar weeks')
+}
+
+# Test response model
+test_response_model = {
+    'message': fields.String(description='Test message'),
+    'timestamp': fields.DateTime(description='Test timestamp'),
+    'status': fields.String(description='Test status')
 }

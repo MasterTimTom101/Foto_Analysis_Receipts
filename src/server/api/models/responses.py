@@ -4,21 +4,6 @@ Common response models for the API
 
 from flask_restx import fields
 
-# Success response model
-success_response_model = {
-    'success': fields.Boolean(default=True, description='Indicates successful operation'),
-    'message': fields.String(description='Success message'),
-    'data': fields.Raw(description='Response data')
-}
-
-# Error response model  
-error_response_model = {
-    'success': fields.Boolean(default=False, description='Indicates failed operation'),
-    'message': fields.String(required=True, description='Error message'),
-    'error_code': fields.String(description='Specific error code'),
-    'details': fields.Raw(description='Additional error details')
-}
-
 
 # Health check response model
 health_response_model = {
@@ -44,8 +29,6 @@ system_info_model = {
 
 # Group all response models
 response_models = {
-    'Success': success_response_model,
-    'Error': error_response_model,
     'HealthResponse': health_response_model,
     'SystemInfo': system_info_model
 }

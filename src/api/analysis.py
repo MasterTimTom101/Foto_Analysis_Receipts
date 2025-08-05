@@ -8,47 +8,25 @@ from datetime import datetime
 import os
 import pandas as pd
 
-from ..models.analysis import (analysis_request_model, analysis_result_model, 
-                              analysis_summary_model, calendar_weeks_model, 
-                              receipt_analysis_model, calendar_week_model)
-from ...core.config import DevelopmentConfig
-from ...services.receipt_analyzer import ReceiptAnalyzer
+from .models import (analysis_request_model, analysis_result_model, analysis_summary_model, 
+                    calendar_weeks_model, receipt_analysis_model, calendar_week_model)
+from ..config import DevelopmentConfig
+from ..receipt_analyzer import ReceiptAnalyzer
 
 # Create API namespace
 api = Namespace('analyze', description='AI analysis operations')
 
-# Register centralized models with the namespace
+# Register models with the namespace
 api_analysis_request = api.model('AnalysisRequest', analysis_request_model)
 api_receipt_analysis = api.model('ReceiptAnalysis', receipt_analysis_model)
-api_calendar_week = api.model('CalendarWeek', calendar_week_model)
-
-# Fix nested model references after registration
-analysis_result_fixed = analysis_result_model.copy()
-analysis_result_fixed['receipts'] = fields.List(fields.Nested(api_receipt_analysis), description='Individual receipt results')
-api_analysis_result = api.model('AnalysisResult', analysis_result_fixed)
-
-calendar_weeks_fixed = calendar_weeks_model.copy()
-calendar_weeks_fixed['weeks'] = fields.List(fields.Nested(api_calendar_week))
-api_calendar_weeks = api.model('CalendarWeeksList', calendar_weeks_fixed)
-
+api_analysis_result = api.model('AnalysisResult', analysis_result_model)
 api_analysis_summary = api.model('AnalysisSummary', analysis_summary_model)
+api_calendar_week = api.model('CalendarWeek', calendar_week_model)
+api_calendar_weeks = api.model('CalendarWeeksList', calendar_weeks_model)
 
 # Initialize analyzer
 config = DevelopmentConfig()
 analyzer = ReceiptAnalyzer(config)
-
-def convert_dataframe_to_receipts(df_result):
-    """Convert DataFrame to list of receipt dictionaries for API response"""
-    receipts_data = []
-    for _, row in df_result.iterrows():  
-        receipts_data.append({
-            'datum': str(row.get('Datum', '')),
-            'uhrzeit': str(row.get('Uhrzeit', '')),
-            'summe_food': float(row.get('Summe_Food', 0.0)),
-            'summe_nonfood': float(row.get('Summe_NonFood', 0.0)),
-            'foto_datei': str(row.get('Foto_Datei', ''))
-        })
-    return receipts_data
 
 @api.route('/')
 class AnalysisTrigger(Resource):
@@ -98,7 +76,15 @@ class AnalysisTrigger(Resource):
             summary = analyzer.get_week_summary(df_result)
             
             # Convert DataFrame to list of dictionaries for API response
-            receipts_data = convert_dataframe_to_receipts(df_result)
+            receipts_data = []
+            for _, row in df_result.iterrows():
+                receipts_data.append({
+                    'datum': str(row.get('Datum', '')),
+                    'uhrzeit': str(row.get('Uhrzeit', '')),
+                    'summe_food': float(row.get('Summe_Food', 0.0)),
+                    'summe_nonfood': float(row.get('Summe_NonFood', 0.0)),
+                    'foto_datei': str(row.get('Foto_Datei', ''))
+                })
             
             return {
                 'calendar_week': calendar_week,
@@ -135,7 +121,15 @@ class AnalysisResult(Resource):
             summary = analyzer.get_week_summary(df_result)
             
             # Convert to API format
-            receipts_data = convert_dataframe_to_receipts(df_result)
+            receipts_data = []
+            for _, row in df_result.iterrows():
+                receipts_data.append({
+                    'datum': str(row.get('Datum', '')),
+                    'uhrzeit': str(row.get('Uhrzeit', '')),
+                    'summe_food': float(row.get('Summe_Food', 0.0)),
+                    'summe_nonfood': float(row.get('Summe_NonFood', 0.0)),
+                    'foto_datei': str(row.get('Foto_Datei', ''))
+                })
             
             # Get file modification time as analysis date
             analysis_date = datetime.fromtimestamp(csv_file.stat().st_mtime).isoformat()
