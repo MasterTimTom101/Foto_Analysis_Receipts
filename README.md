@@ -64,7 +64,7 @@ Interactive API documentation where you can:
 ### Installation
 1. **Clone and navigate:**
    ```bash
-   cd Photo_Analysis_of_Receipts
+   cd Foto_Analysis_Receipts
    ```
 
 2. **Install dependencies:**
@@ -168,7 +168,7 @@ Both API and CSV files contain:
 ## 🏗️ Project Structure
 
 ```
-📦 Photo_Analysis_of_Receipts/
+📦 Foto_Analysis_Receipts/
 ├── 📁 src/
 │   └── 📁 server/
 │       ├── 📁 api/
@@ -214,7 +214,7 @@ FLASK_DEBUG=True
 **Import Errors:**
 ```bash
 # Make sure you're in the project root and virtual environment is activated
-pwd  # Should show .../Photo_Analysis_of_Receipts
+pwd  # Should show .../Foto_Analysis_Receipts
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 python run_app.py
 ```
