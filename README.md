@@ -1,4 +1,4 @@
-# 📄 Photo Analysis of Receipts
+# 📄 Foto Analysis of Receipts
 
 > AI-powered receipt analysis tool with REST API and Swagger documentation that extracts food and non-food costs from receipt photos using Google Gemini AI
 
