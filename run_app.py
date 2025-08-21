@@ -14,6 +14,7 @@ if __name__ == '__main__':
     print("Starting Receipt Analysis Web Application...")
     print("Application will be available at: http://localhost:8081")
     print("Available routes:")
+    print("  - http://localhost:8081/swagger")
     print("  - http://localhost:8081/receipts/home")
     print("  - http://localhost:8081/receipts/upload") 
     print("  - http://localhost:8081/receipts/analyse")
